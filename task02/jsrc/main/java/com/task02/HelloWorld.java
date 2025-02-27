@@ -21,6 +21,7 @@ import java.util.function.Function;
 
 @LambdaHandler(
 		lambdaName = "hello_world",
+		aliasName = "learn",
 		roleName = "hello_world-role",
 		layers = {"sdk-layer"},
 		runtime = DeploymentRuntime.JAVA17,
