@@ -10,6 +10,7 @@ import java.util.Map;
 
 @LambdaHandler(
     lambdaName = "hello_world",
+	aliasName = "learn",
 	roleName = "hello_world-role",
 	isPublishVersion = false,
 	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
