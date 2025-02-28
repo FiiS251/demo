@@ -26,9 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-
-@LambdaHandler(
-		lambdaName = "api_handler",
+@LambdaHandler(lambdaName = "api_handler",
 		aliasName = "learn",
 		roleName = "api_handler-role",
 		runtime = DeploymentRuntime.JAVA17,
@@ -36,72 +34,67 @@ import java.util.UUID;
 		isPublishVersion = false,
 		logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
-@EnvironmentVariables({
+@EnvironmentVariables(value = {
 		@EnvironmentVariable(key = "region", value = "${region}"),
-		@EnvironmentVariable(key = "table", value = "${target_table}")
-})
+		@EnvironmentVariable(key = "table", value = "${target_table}")}
+)
 public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+	public static final ObjectMapper objectMapper = new ObjectMapper();
 	private static final int SC_CREATED = 201;
-	private static final String REGION = "eu-central-1";
-	private static final String TABLE_NAME = "cmtr-d0429c20-Events-test";
-
 	private final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
-			.withRegion(REGION)
+			.withRegion("eu-central-1")
 			.build();
+	private final String tableName = "cmtr-d0429c20-Events-test";
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
 		context.getLogger().log("Request: " + request.getBody());
+        Event event = null;
 
-		Event event;
-		try {
-			event = OBJECT_MAPPER.readValue(request.getBody().replace("content", "body"), Event.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Failed to parse event JSON", e);
-		}
+        try {
+            event = objectMapper.readValue(
+					request.getBody().replace("content", "body"),
+					Event.class
+			);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-		context.getLogger().log("Event before: " + event);
+        context.getLogger().log("Event before: " + event);
 		event.setId(UUID.randomUUID().toString());
 		event.setCreatedAt(formatUsingJodaTime(org.joda.time.LocalDate.now()));
 		context.getLogger().log("Event after: " + event);
 
-		Map<String, AttributeValue> item = createDynamoDBItem(event);
-		context.getLogger().log("Item: " + item);
-
-		client.putItem(new PutItemRequest().withTableName(TABLE_NAME).withItem(item));
-		context.getLogger().log("Item added to table: " + TABLE_NAME);
-
-		return createResponse(event);
-	}
-
-	private Map<String, AttributeValue> createDynamoDBItem(Event event) {
 		Map<String, AttributeValue> item = new HashMap<>();
 		item.put("id", new AttributeValue().withS(event.getId()));
-		item.put("principalId", new AttributeValue().withN(String.valueOf(event.getPrincipalId())));
+		item.put("principalId", new AttributeValue().withN((String.valueOf(event.getPrincipalId()))));
 		item.put("createdAt", new AttributeValue().withS(event.getCreatedAt()));
-
 		Map<String, AttributeValue> bodyMap = new HashMap<>();
 		event.getBody().forEach((key, value) -> bodyMap.put(key, new AttributeValue().withS(value)));
 		item.put("body", new AttributeValue().withM(bodyMap));
 
-		return item;
-	}
+		context.getLogger().log("Item: " + item);
+		client.putItem(new PutItemRequest().withTableName(tableName).withItem(item));
+		context.getLogger().log("Item added to table: " + tableName);
 
-	private APIGatewayProxyResponseEvent createResponse(Event event) {
 		Response responseObj = new Response(SC_CREATED, event);
-		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent().withStatusCode(SC_CREATED);
+
+		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
+		response.setStatusCode(201);
 		try {
-			response.setBody(OBJECT_MAPPER.writeValueAsString(responseObj));
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Failed to serialize response JSON", e);
+			String responseBody = objectMapper.writeValueAsString(responseObj);
+			response.setBody(responseBody);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
+
 		return response;
 	}
 
-	private static String formatUsingJodaTime(org.joda.time.LocalDate localDate) {
-		return ISODateTimeFormat.dateTime().print(localDate.toDateTimeAtStartOfDay(DateTimeZone.UTC));
+	public static String formatUsingJodaTime(org.joda.time.LocalDate localDate) {
+		org.joda.time.format.DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
+		return formatter.print(localDate.toDateTimeAtStartOfDay(DateTimeZone.UTC));
 	}
 
 	public static class Event {
@@ -114,18 +107,41 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 		@JsonProperty("body")
 		private Map<String, String> body;
 
-		public String getId() { return id; }
-		public void setId(String id) { this.id = id; }
-		public int getPrincipalId() { return principalId; }
-		public void setPrincipalId(int principalId) { this.principalId = principalId; }
-		public String getCreatedAt() { return createdAt; }
-		public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
-		public Map<String, String> getBody() { return body; }
-		public void setBody(Map<String, String> body) { this.body = body; }
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public int getPrincipalId() {
+			return principalId;
+		}
+
+		public void setPrincipalId(int principalId) {
+			this.principalId = principalId;
+		}
+
+		public String getCreatedAt() {
+			return createdAt;
+		}
+
+		public void setCreatedAt(String createdAt) {
+			this.createdAt = createdAt;
+		}
+
+		public Map<String, String> getBody() {
+			return body;
+		}
+
+		public void setBody(Map<String, String> body) {
+			this.body = body;
+		}
 
 		@Override
-		public String toString() { return new Gson().toJson(this); }
+		public String toString() {
+            return new Gson().toJson(this);
+        }
 	}
 }
-
-
