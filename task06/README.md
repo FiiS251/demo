@@ -1,47 +1,38 @@
-# task06
+# task06 AWS Lambda + DynamoDB Stream Integration
 
-High level project overview - business value it brings, non-detailed technical overview.
-
-### Notice
-All the technical details described below are actual for the particular
-version, or a range of versions of the software.
-### Actual for versions: 1.0.0
-
-## task06 diagram
-
-![task06](pics/task06_diagram.png)
-
-## Lambdas descriptions
-
-### Lambda `lambda-name`
-Lambda feature overview.
-
-### Required configuration
-#### Environment variables
-* environment_variable_name: description
-
-#### Trigger event
-```buildoutcfg
-{
-    "key": "value",
-    "key1": "value1",
-    "key2": "value3"
-}
+```shell
+syndicate generate project --name task06
+cd task06
+syndicate generate config --name "dev" `
+    --region "eu-central-1" `
+    --bundle_bucket_name "syndicate-education-platform-custom-sandbox-artifacts-sbox02/67d6e834/task06" `
+    --prefix "cmtr-67d6e834-" `
+    --extended_prefix "true" `
+    --tags "course_id:SEP_GL_6,course_type:stm,student_id:67d6e834,type:student" `
+    --iam_permissions_boundary "arn:aws:iam::905418349556:policy/eo_role_boundary" `
+    --access_key "" `
+    --secret_key "" `
+    --session_token ""
+[System.Environment]::SetEnvironmentVariable('SDCT_CONF', 'C:\projects\serverless\aws\epam_serverless_aws_deep_dive_06\task06\.syndicate-config-dev', [System.EnvironmentVariableTarget]::Process)
 ```
-* key: [Required] description of key
-* key1: description of key1
 
-#### Expected response
-```buildoutcfg
-{
-    "status": 200,
-    "message": "Operation succeeded"
-}
+```shell
+syndicate generate lambda `
+    --name audit_producer `
+    --runtime java
+
+syndicate generate meta dynamodb `
+    --resource_name Configuration `
+    --hash_key_name key `
+    --hash_key_type S `
+    --read_capacity 1 `
+    --write_capacity 1
+
+syndicate generate meta dynamodb `
+    --resource_name Audit `
+    --hash_key_name id `
+    --hash_key_type S `
+    --read_capacity 1 `
+    --write_capacity 1
+
 ```
----
-
-## Deployment from scratch
-1. action 1 to deploy the software
-2. action 2
-...
-

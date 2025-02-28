@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloud Mentor Task</title>
+  
+<link rel="stylesheet" href="Cloud%20Mentor%20Task_files/sre.css">
+
+  <link href="Cloud%20Mentor%20Task_files/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <link rel="stylesheet" href="Cloud%20Mentor%20Task_files/all.min.css" integrity="sha512-9xKTRVabjVeZmc+GUW8GgSmcREDunMM+Dt/GrzchfN8tkwHizc5RP4Ok/MXFFy5rIjJjzhndFScTceq5e6GvVQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="Cloud%20Mentor%20Task_files/md_styles.css">
+</head>
+
+<body>
+  
+    
+  <style>
+    #newUISwitch {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    #newUISwitch:hover {
+      filter: grayscale(25%);
+    }
+  </style>
+  <a id="newUISwitch" class="bg-primary p-1 d-flex justify-content-center align-items-center gap-2" onclick="sendGetRequest('https://syndicate.education/v2/switch_ui')">
+      <i class="fa-solid fa-wand-magic-sparkles text-warning fa-shake" style="--fa-animation-duration: 3s;"></i>
+      <span class="text-white">Try out our new UI</span>
+  </a>
+
+  
+  <div class="container-xl my-4">
+    <div id="creditsModalBlock">
+<!-- Bootstrap modal -->
+<div class="modal fade" id="validationCreditsModal" tabindex="-1" role="dialog" aria-labelledby="credentialsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="credentialsModalLabel">Verification
+                    account</h5>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Use any of the following credentials to access AWS resources
+                    programmatically or from the AWS CLI. You can retrieve new
+                    credentials as often as needed.
+                </p>
+                <hr>
+                <div class="console-url">
+                    <a id="validationManagementConsoleURL" href="" class="btn btn-link p-0" target="_blank" rel="noopener noreferrer">Management
+                        console
+                    </a>
+                </div>
+                <hr>
+                <div class="tab-content" id="nav-validationCreditsModalContent">
+                    <div class="tab-pane fade show active" id="nav-generate-validation-credits" role="tabpanel" aria-labelledby="nav-config-syndicate-tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#validationLinux" aria-selected="true" role="tab">macOS and Linux</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" data-bs-toggle="tab" href="#validationWindows" aria-selected="false" tabindex="-1" role="tab">Windows</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" data-bs-toggle="tab" href="#validationPowershell" aria-selected="false" tabindex="-1" role="tab">PowerShell</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="validationLinux" role="tabpanel">
+                                <div class="position-relative">
+                                    <pre class="chroma" id="validationLinuxCreds" data-toggle="tooltip" data-placement="top" title="Click to copy this command" style="white-space: nowrap;"></pre>
+                                    <i class="fas fa-copy position-absolute top-0 end-0 p-2" onclick="copyToClipboard('validationLinuxCreds')" style="cursor: pointer;"></i>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="validationWindows" role="tabpanel">
+                                <div class="position-relative">
+                                    <pre class="chroma" id="validationWindowsCreds" data-toggle="tooltip" data-placement="top" title="Click to copy this command" style="white-space: nowrap;"></pre>
+                                    <i class="fas fa-copy position-absolute top-0 end-0 p-2" onclick="copyToClipboard('validationWindowsCreds')" style="cursor: pointer;"></i>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="validationPowershell" role="tabpanel">
+                                <div class="position-relative">
+                                    <pre class="chroma" id="validationPowerShellCreds" data-toggle="tooltip" data-placement="top" title="Click to copy this command" style="white-space: nowrap;"></pre>
+                                    <i class="fas fa-copy position-absolute top-0 end-0 p-2" onclick="copyToClipboard('validationPowerShellCreds')" style="cursor: pointer;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div id="copyValidationAccessKeyId" class="d-flex justify-content-between">
+                    <label class="left-container p-2" style="flex-basis: 26%;" for="validationAccessKeyId"><b>AWS Access Key ID:</b></label>
+                    <input class="individual-entry p-2" style="flex-basis: 70%;" disabled="disabled" type="text" id="validationAccessKeyId">
+                    <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="top" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('validationAccessKeyId')"></i>
+                </div>
+                <div id="copyValidationSecretAccessKey" class="d-flex justify-content-between">
+                    <label class="left-container p-2" style="flex-basis: 26%;" for="validationSecretAccessKey"><b>AWS Secret Access
+                        Key:</b></label>
+                    <input class="individual-entry p-2" style="flex-basis: 70%;" disabled="disabled" type="text" id="validationSecretAccessKey">
+                    <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="top" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('validationSecretAccessKey')"></i>
+                </div>
+                <div id="copyValidationSessionToken" class="d-flex justify-content-between">
+                    <label class="left-container p-2" style="flex-basis: 26%;" for="validationSessionToken"><b>AWS Session
+                        Token:</b></label>
+                    <input class="individual-entry p-2" style="flex-basis: 70%;" disabled="disabled" type="text" id="validationSessionToken">
+                    <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="top" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('validationSessionToken')"></i>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="validationCreditsModalCloseButton" class="btn btn-secondary" data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap modal -->
+<div class="modal fade" id="executionCreditsModal" tabindex="-1" role="dialog" aria-labelledby="executionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="executionModalLabel">Sandbox
+                    credentials</h5>
+            </div>
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-link active" id="nav-config-syndicate-tab" data-bs-toggle="tab" href="#nav-generate-config" role="tab" aria-controls="nav-generate-config" aria-selected="true">Config Syndicate
+                    </a>
+                    <a class="nav-link" id="nav-update-credentials-tab" data-bs-toggle="tab" href="#nav-update-credentials" role="tab" aria-controls="nav-update-credentials" aria-selected="false" tabindex="-1">Update Credentials
+                    </a>
+                </div>
+            </nav>
+            <div class="modal-body">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-generate-config" role="tabpanel" aria-labelledby="nav-config-syndicate-tab">
+                        <p>The task needs Syndicate for resource deployment. To
+                            configure it properly, run the <b>syndicate generate
+                            config</b> command, as is shown in the sample below:</p>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#linux" aria-selected="true" role="tab">macOS and Linux</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" data-bs-toggle="tab" href="#windows" aria-selected="false" tabindex="-1" role="tab">Windows</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" data-bs-toggle="tab" href="#powershell" aria-selected="false" tabindex="-1" role="tab">PowerShell</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="linux" role="tabpanel">
+                                <div class="position-relative">
+                                    <pre class="chroma" id="syndicateGenerateLinux" data-toggle="tooltip" data-placement="top" title="Click to copy this command" style="white-space: pre-wrap;"></pre>
+                                    <i class="fas fa-copy position-absolute top-0 end-0 p-2" onclick="copyToClipboard('syndicateGenerateLinux')" style="cursor: pointer;"></i>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="windows" role="tabpanel">
+                                <div class="position-relative">
+                                    <pre class="chroma" id="syndicateGenerateWindows" data-toggle="tooltip" data-placement="top" title="Click to copy this command" style="white-space: pre-wrap;"></pre>
+                                    <i class="fas fa-copy position-absolute top-0 end-0 p-2" onclick="copyToClipboard('syndicateGenerateWindows')" style="cursor: pointer;"></i>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="powershell" role="tabpanel">
+                                <div class="position-relative">
+                                    <pre class="chroma" id="syndicateGeneratePowerShell" data-toggle="tooltip" data-placement="top" title="Click to copy this command" style="white-space: pre-wrap;"></pre>
+                                    <i class="fas fa-copy position-absolute top-0 end-0 p-2" onclick="copyToClipboard('syndicateGeneratePowerShell')" style="cursor: pointer;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>The command needs the following parameters:</p>
+                        <div id="copyExecutionRegion" class="d-flex justify-content-between">
+                            <label class="left-container p-2" style="flex-basis: 35%;" for="executionRegion"><b>--region</b></label>
+                            <input class="individual-entry p-2" style="flex-basis: 65%;" disabled="disabled" type="text" id="executionRegion">
+                            <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="center" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('executionRegion')"></i>
+                        </div>
+                        <div id="copyExecutionBucket" class="d-flex justify-content-between">
+                            <label class="left-container p-2" style="flex-basis: 35%;" for="executionBucket"><b>--bundle_bucket_name</b></label>
+                            <input class="individual-entry p-2" style="flex-basis: 65%;" disabled="disabled" type="text" id="executionBucket">
+                            <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="top" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('executionBucket')"></i>
+                        </div>
+                        <div id="copyExecutionAccessKeyId" class="d-flex justify-content-between">
+                            <label class="left-container p-2" style="flex-basis: 35%;" for="executionAccessKeyId"><b>--access_key</b></label>
+                            <input class="individual-entry p-2" style="flex-basis: 65%;" disabled="disabled" type="text" id="executionAccessKeyId">
+                            <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="top" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('executionAccessKeyId')"></i>
+                        </div>
+                        <div id="copyExecutionSecretKey" class="d-flex justify-content-between">
+                            <label class="left-container p-2" style="flex-basis: 35%;" for="executionSecretKey"><b>--secret_key</b></label>
+                            <input class="individual-entry p-2" style="flex-basis: 65%;" disabled="disabled" type="text" id="executionSecretKey">
+                            <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="top" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('executionSecretKey')"></i>
+                        </div>
+                        <div id="copyExecutionSessionToken" class="d-flex justify-content-between">
+                            <label class="left-container p-2" style="flex-basis: 35%;" for="executionSessionToken"><b>--session_token</b></label>
+                            <input class="individual-entry p-2" style="flex-basis: 65%;" disabled="disabled" type="text" id="executionSessionToken">
+                            <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="top" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('executionSessionToken')"></i>
+                        </div>
+                        <div id="copyExecutionPrefix" class="d-flex justify-content-between">
+                            <label class="left-container p-2" style="flex-basis: 35%;" for="executionPrefix"><b>--prefix</b></label>
+                            <input class="individual-entry p-2" style="flex-basis: 65%;" disabled="disabled" type="text" id="executionPrefix">
+                            <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="top" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('executionPrefix')"></i>
+                        </div>
+                        <div id="copyExecutionTags" class="d-flex justify-content-between">
+                            <label class="left-container p-2" style="flex-basis: 35%;" for="executionTags"><b>--tags</b></label>
+                            <input class="individual-entry p-2" style="flex-basis: 65%;" disabled="disabled" type="text" id="executionTags">
+                            <i class="fas fa-copy ml-auto p-2" data-toggle="tooltip" data-placement="top" title="Copy" style="cursor: pointer;" onclick="copyToClipboard('executionTags')"></i>
+                        </div>
+                        <p class="mt-2">The output is:</p>
+                        <pre>Syndicate initialization has been completed.
+Set SDCT_CONF:
+Unix: export SDCT_CONF=/Users/$user/temp/syndicate-project/.syndicate-config-personal-development-account
+Windows: setx SDCT_CONF /Users/$user/temp/syndicate-project/.syndicate-config-personal-development-account</pre>
+                        <p>The output provides samples of the command to set the
+                            environment variable SDCT_CONF required by
+                            aws-syndicate to operate. Copy and execute one of
+                            them, based on your OS.</p>
+                        <hr>
+                        <h4>Using Syndicate Effectively</h4>
+                        <p>Once everything has been correctly set up, you as a
+                            student can leverage the capabilities of Syndicate
+                            for the deployment of various resources. <a href="https://github.com/epam/aws-syndicate/wiki/6.-Available-Framework-Commands" target="_blank">Available
+                                commands</a>.</p>
+                        <h4>Resource Management and Cost Efficiency</h4>
+                        <p>It is important to remember that once you've
+                            completed your tasks, you should clean up the
+                            deployed resources. This practice not only ensures a
+                            tidy workspace but also prevents any unnecessary
+                            costs being incurred for resources left running on
+                            AWS. Find the respective command in the "Cleaning a
+                            bundle" block below.</p>
+                        <h4>Sandbox Account Auto-Cleaner</h4>
+                        <p>On your student sandbox account, we have an
+                            autocleaner feature in place. This automatic
+                            function cleans up resources that are older than two
+                            and a half hours.</p>
+                        <hr>
+                        <p></p><h4>Cleaning a Bundle</h4><p></p>
+                        <p>To clean all the deployed lambdas and resources,
+                            execute (bundle name to clean will be resolved):</p>
+                        <div class="position-relative">
+                            <pre class="chroma" id="syndicateCleanCommand" data-toggle="tooltip" data-placement="top" title="Click to copy this command" style="white-space: pre-wrap;">syndicate clean</pre>
+                            <i class="fas fa-copy position-absolute top-0 end-0 p-2" onclick="copyToClipboard('syndicateCleanCommand')" style="cursor: pointer;"></i>
+                        </div>
+                        <p>You should see a message like:</p>
+                        <pre>AWS resources were removed.</pre>
+                    </div>
+                    <div class="tab-pane fade" id="nav-update-credentials" role="tabpanel" aria-labelledby="nav-update-credentials-tab">
+                        <p>To update credentials, change the following
+                            parameters in your `syndicate.yml` file.</p>
+                        <div class="position-relative">
+                            <pre class="chroma" id="syndicateUpdateCredentials" style="white-space: pre-wrap;"></pre>
+                            <i class="fas fa-copy position-absolute top-0 end-0 p-2" onclick="copyToClipboard('syndicateUpdateCredentials')" style="cursor: pointer;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="executionCreditsModalCloseButton" class="btn btn-secondary" data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+    <div id="firstTemporaryCredits" class="mb-3">
+<div class="accordion mt-3 mb-3" id="firstTemporaryCreditsAccordion">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="firstTemporaryCreditsHeading">
+            <button class="accordion-button collapsed bg-secondary-subtle" type="button" data-bs-toggle="collapse" data-bs-target="#firstTemporaryCreditsCollapse" aria-expanded="false" aria-controls="firstTemporaryCreditsCollapse" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                <div class="row d-flex justify-content-between">
+                    <div class="col-lg-2 d-flex justify-content-center align-items-center p-0">
+                        <i class="fas fa-solid fa-key fa-3x" style="color: #ffc107;"></i>
+                    </div>
+                    <div class="col-lg-10 align-self-center p-0">
+                        You may obtain temporary credentials to access the AWS
+                        infrastructure here.
+                    </div>
+                </div>
+            </button>
+        </h2>
+        <div id="firstTemporaryCreditsCollapse" class="accordion-collapse collapse" aria-labelledby="firstTemporaryCreditsHeading" data-bs-parent="#firstTemporaryCreditsAccordion">
+            <div class="accordion-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <strong>Sandbox Account</strong><br>
+                        Use these credentials if you do not have your own AWS
+                        account. This is sandbox account we provide for working
+                        on your tasks, creating the related resources and
+                        estimating the result by yourself. You may also use a
+                        personal AWS account instead.
+                    </div>
+                    <div class="col-lg-4 text-end d-flex align-items-center justify-content-end">
+                        <button id="firstExecutionTempCredits" class="btn btn-warning" style="width: 70%;">Get sandbox credentials
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <strong>Verification Account</strong><br>
+                        Use this account to review the resources that were
+                        created during the task verification. <br>Region: <b>eu-central-1</b>
+                    </div>
+                    <div class="col-lg-4 text-end d-flex align-items-center justify-content-end">
+                        <button id="firstTempCreditsButton" class="btn btn-warning" style="width: 70%;">Get verification credentials
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+    <div id="taskDefinition" class="mb-3">
+      <div class="h2" align="center">
+        AWS Lambda + DynamoDB Stream Integration
+        <a class="d-none" href="https://learn.epam.com/study/path?rootId=16440522" target="_blank">link to course</a>
+        <div id="taskProgressStatus" class="d-none">Not Started</div>
+      </div>
+      <div id="definitionContent" class="container-fluid p-4 rounded bg-secondary-subtle">
+        <h4>Architecture:</h4>
+<div style="text-align: center;">
+  <img src="Cloud%20Mentor%20Task_files/img.png" style="width: 50%; padding: 10px; border: 2px solid grey; background-color: white;">
+</div>
+
+<p>This task involves deploying a <code>Lambda function</code> and two <code>DynamoDB</code>
+ tables: 'Configuration' and 'Audit'. The goal is to track changes made 
+to configuration items in the 'Configuration' table and store audit 
+entries in the 'Audit' table.</p>
+<hr>
+<h4>The Goal Of This Task is...</h4>
+<p>To deploy a Lambda function triggered by a DynamoDB Stream on the 
+'Configuration' table. The Lambda function should track changes made to 
+configuration items and store audit entries in the 'Audit' table.</p>
+<p><strong>The 'Configuration' data is the following:</strong></p>
+<pre class="codehilite"><code class="language-json">{
+    "key": // string, key of the configuration item
+    "value": // int
+}
+</code></pre>
+
+<p>Example 1: no items stored in 'Configuration' table.<br>
+The following item has been created: </p>
+<pre class="codehilite"><code class="language-json">{
+    "key": "CACHE_TTL_SEC",
+    "value": 3600
+}
+</code></pre>
+
+<p>After the configuration item is saved to the table the following audit item<br>
+has been created in the 'Audit' table: </p>
+<pre class="codehilite"><code class="language-json">{
+   "id": // string, uuidv4
+   "itemKey": "CACHE_TTL_SEC",
+   "modificationTime": // string, ISO8601 formatted string, example: 2024-01-01T00:00:00.000Z|2024-01-01T00:00:00.000000
+   "newValue": {
+       "key": "CACHE_TTL_SEC",
+       "value": 3600
+   },
+} 
+</code></pre>
+
+<p>Example 2: the following item has been stored in the 'Configuration' table: </p>
+<pre class="codehilite"><code class="language-json">{
+    "key": "CACHE_TTL_SEC",
+    "value": 3600
+} 
+</code></pre>
+
+<p>After the value of this configuration item has been changed<br>
+from 3600 to 1800, the audit item has been created <br>
+in the 'Audit' table with the following content: </p>
+<pre class="codehilite"><code class="language-json">{
+   "id": // string, uuidv4
+   "itemKey": "CACHE_TTL_SEC",
+   "modificationTime": // string, ISO8601 formatted string, example: 2024-01-01T00:00:00.000Z|2024-01-01T00:00:00.000000
+   "updatedAttribute": "value",
+   "oldValue": 3600,
+   "newValue": 1800
+} 
+</code></pre>
+
+<hr>
+<h4>Resources Names</h4>
+<p>Please note it is obligatory to stick to the following resources naming in order to pass the task:</p>
+<ul>
+<li>Lambda Function: audit_producer</li>
+<li>DynamoDB Table 1: Configuration</li>
+<li>DynamoDB Table 2: Audit</li>
+</ul>
+<hr>
+<h4>AWS-Syndicate Aliases Usage</h4>
+<p>It is strongly recommended to use a Lambda environment variable and 
+AWS Syndicate static aliases to pass the actual resource names (with 
+prefixes and suffixes) needed for solving the task to your Lambda 
+function.</p>
+<p>During verification, the following AWS-Syndicate aliases will be used:<br>
+- <code>lambdas_alias_name: learn</code><br>
+- <code>target_table: Audit</code></p>
+<p>More details on AWS-Syndicate aliases usage can be found on <strong><a href="https://github.com/epam/aws-syndicate/wiki/5.-Using-aliases" rel="noopener" target="_blank">AWS-Syndicate Wiki</a></strong></p>
+<hr>
+<h4>Lambda Versions &amp; Aliases</h4>
+<p>Please, make sure that your deployment resources define Lambda to be 
+deployed with Version (Lambda Version) and Alias (Lambda Alias). It is 
+required for the task verification to pass. Note, that usage of the 
+Lambda Versions &amp; Aliases is a best practice of lambdas management, 
+so do not neglect to deep dive into versions and aliases management. </p>
+<p>AWS-Syndicate project examples where Lambda Aliases are used:<br>
+- <strong><a href="https://github.com/epam/aws-syndicate/tree/master/examples/python/lambda-cognito-api-gateway" rel="noopener" target="_blank">Python</a></strong><br>
+- <strong><a href="https://github.com/epam/aws-syndicate/tree/master/examples/nodejs/demo-cognito-api-gateway" rel="noopener" target="_blank">NodeJS</a></strong><br>
+- <strong><a href="https://github.com/epam/aws-syndicate/tree/master/examples/java/demo-apigateway-cognito" rel="noopener" target="_blank">Java</a></strong><br>
+- <strong><a href="https://github.com/epam/aws-syndicate/tree/master/examples/dotnet/lambda-with-url-and-layers" rel="noopener" target="_blank">.NET</a></strong></p>
+<p>For more details about Lambda Aliases usage see <strong><a href="https://docs.aws.amazon.com/lambda/latest/dg/using-aliases.html" rel="noopener" target="_blank">AWS Documentation</a></strong></p>
+<hr>
+<h4>Runtime</h4>
+<p>Runtime of the project is recognized by verifier automatically, no additional actions required.</p>
+<hr>
+<h4>AWS-Syndicate:</h4>
+<p>Make sure you have <code>aws-syndicate</code> installed. If not - follow the installation instructions provided in the <strong><a href="https://github.com/epam/aws-syndicate/wiki/2.-Quick-start#21-installing-the-framework" rel="noopener" target="_blank">installation tutorial</a></strong>.</p>
+<hr>
+<h4>Video Instructions:</h4>
+<p>You can watch <strong><a href="https://videoportal.epam.com/playlist/y769yAJ8" rel="noopener" target="_blank">video instructions </a></strong> of the Syndicate Deployment Flow based on the task01 anytime on EPAM Video Portal. </p>
+<p>Videos in the <strong><a href="https://videoportal.epam.com/playlist/y769yAJ8" rel="noopener" target="_blank">playlist</a></strong> are ordered according the <strong><a href="https://github.com/epam/aws-syndicate/wiki/7.-Basic-Deployment-Flow" rel="noopener" target="_blank">Deployment Flow</a></strong> that is the same for all <strong>Syndicate-based tasks</strong>.</p>
+<hr>
+<h4>For this task you should:</h4>
+<ol>
+<li><strong>Generate Project:</strong></li>
+</ol>
+<ul>
+<li>Use <code>aws-syndicate</code> to <a href="https://github.com/epam/aws-syndicate/wiki/2.-Quick-start#221-creating-project-files" rel="noopener" target="_blank">generate a new project</a>. This will set up the basic structure needed for your Lambda deployment.</li>
+</ul>
+<ol start="2">
+<li><strong>Generate Config:</strong></li>
+</ol>
+<ul>
+<li>Use <code>aws-syndicate</code> to <a href="https://github.com/epam/aws-syndicate/wiki/2.-Quick-start#222-creating-configuration-files-for-environment" rel="noopener" target="_blank">generate a config for your project</a>. </li>
+<li>This will set up configuration files <code>syndicate.yml</code> and <code>syndicate_aliases.yml</code> that may be edited later.</li>
+</ul>
+<ol start="3">
+<li><strong>Generate Lambda with:</strong></li>
+</ol>
+<ul>
+<li>Inside your project, use <code>aws-syndicate</code> to <a href="https://github.com/epam/aws-syndicate/wiki/2.-Quick-start#224-creating-lambda-files" rel="noopener" target="_blank">generate a Lambda function</a>. This step will create the necessary files and configurations.</li>
+</ul>
+<details> <summary> For Node.js Runtime  </summary>
+
+
+<pre class="codehilite"><code class="language-json"> If you have decided to use TypeScript for your AWS Lambda function instead of plain Node.js, follow the steps below to set up your project. 
+
+ These steps are mandatory for TypeScript users to ensure proper compilation and deployment of your TypeScript code to AWS Lambda.
+
+  Step 1: Create Required TypeScript Files
+
+  Create an `index.ts file`: This will be your main handler function file. 
+
+  It should be located in the lambda folder, next to an autogenerated `index.js file`.
+
+  If your project structure differs, adjust the "func_name" parameter in `lambda_config.json` to match your setup.
+
+  Step 2: Configure TypeScript
+
+  Create a `tsconfig.json` file in the root of your project with the following content:
+
+
+  {
+      "compilerOptions": {
+          "target": "es6",
+          "module": "commonjs",
+          "outDir": "./dist",
+          "rootDir": "./app",
+          "strict": true,
+          "esModuleInterop": true,
+          "moduleResolution": "node",
+          "allowSyntheticDefaultImports": true
+      },
+      "include": ["app/**/*.ts", "app/lambdas/**/*.ts"],
+      "exclude": ["node_modules"]
+  }
+
+  Step 3: Install TypeScript Compiler
+
+  Install TypeScript globally via npm:
+
+
+  npm install -g typescript
+
+
+  Verify the installation by checking the TypeScript compiler version:
+
+
+  tsc -v
+
+
+  Step 4: Compile TypeScript to JavaScript
+
+  Navigate to your project directory where `tsconfig.json` is located.
+
+  Run the TypeScript compiler:
+
+
+  tsc
+
+
+  This compiles your `.ts` files to `.js` files based on the configuration specified in `tsconfig.json`.
+
+  Step 5: Organize Compiled JavaScript Files
+
+  - Locate the compiled `.js` files in the `./dist directory` (or whichever directory you specified as the "outDir" in your `tsconfig.json`).
+
+  - Move or copy the `.js` files next to their corresponding `.ts` files in the project structure, particularly within the lambda folder.
+
+  By following these steps, you will have set up your project for AWS Lambda, including compiling TypeScript files into JavaScript and organizing them according to your project's structure.
+</code></pre>
+
+
+</details>
+
+<ol start="4">
+<li><strong>Generate 'Configuration' Table Metadata:</strong></li>
+</ol>
+<ul>
+<li>Use <code>aws-syndicate</code> to <a href="https://github.com/epam/aws-syndicate/wiki/4.-Resources-Meta-Descriptions#42-dynamo-db-table" rel="noopener" target="_blank">generate metadata for a DynamoDB table</a> named 'Configuration'.</li>
+</ul>
+<ol start="5">
+<li><strong>Configure DynamoDB Stream:</strong></li>
+</ol>
+<ul>
+<li>Configure the 'Configuration' table with a DynamoDB Stream that triggers the Lambda function on changes.</li>
+</ul>
+<ol start="6">
+<li><strong>Generate 'Audit' Table Metadata:</strong></li>
+</ol>
+<ul>
+<li>Use <code>aws-syndicate</code> to generate metadata for a DynamoDB table named 'Audit.'</li>
+</ul>
+<ol start="7">
+<li><strong>Implement the Logic of the Function:</strong></li>
+</ol>
+<ul>
+<li>In the Lambda function code, implement the logic to handle DynamoDB 
+Stream events, track changes made to configuration items, and store 
+audit entries in the 'Audit' table.</li>
+</ul>
+<ol start="8">
+<li><strong>Build and Deploy Project with the Syndicate Tool:</strong></li>
+</ol>
+<ul>
+<li>Use the <code>aws-syndicate</code> tool to <a href="https://github.com/epam/aws-syndicate/wiki/2.-Quick-start#23-deployment" rel="noopener" target="_blank">build and deploy your project</a>, including the Lambda function and both DynamoDB tables.</li>
+</ul>
+<ol start="9">
+<li><strong>Test the Application:</strong></li>
+</ol>
+<ul>
+<li>Create and change configuration items in the 'Configuration' table.</li>
+<li>Verify that audit entries are created correctly in the 'Audit' table.</li>
+</ul>
+<hr>
+<h4>Verification:</h4>
+<ol>
+<li><strong>Check AWS Lambda Console:</strong></li>
+</ol>
+<ul>
+<li>Confirm that the Lambda function is listed in the AWS Lambda Console.</li>
+<li>Verify that there are no deployment errors.</li>
+</ul>
+<ol start="2">
+<li><strong>Check DynamoDB Console:</strong></li>
+</ol>
+<ul>
+<li>Confirm that the 'Configuration' and 'Audit' tables are listed in the AWS DynamoDB Console.</li>
+<li>Verify that the 'Configuration' table has a DynamoDB Stream configured.</li>
+</ul>
+<ol start="3">
+<li><strong>Check CloudWatch Logs:</strong></li>
+</ol>
+<ul>
+<li>Check the CloudWatch Logs for the Lambda function to ensure there are no errors logged during the execution.</li>
+</ul>
+<ol start="4">
+<li><strong>Test the Application:</strong></li>
+</ol>
+<ul>
+<li>Create a configuration item in the 'Configuration' table.</li>
+<li>Verify that an audit entry is created in the 'Audit' table.</li>
+</ul>
+<ol start="5">
+<li><strong>Update Configuration Item:</strong></li>
+</ol>
+<ul>
+<li>Update a configuration item in the 'Configuration' table.</li>
+<li>Verify that a corresponding audit entry is created in the 'Audit' table with the correct content.</li>
+</ul>
+<p>Completing these steps successfully indicates that you have created a
+ Lambda function triggered by a DynamoDB Stream, tracking changes to 
+configuration items and storing audit entries in the 'Audit' table. Well
+ done on completing this advanced AWS Lambda integration task!</p>
+<hr>
+<h4>Related Questions:</h4>
+<p>Check your theoretical knowledge on the topic by answering the following questions:</p>
+<ul>
+<li>
+<p>How does AWS Lambda <strong><a href="https://docs.aws.amazon.com/lambda/latest/dg/with-ddb.html" rel="noopener" target="_blank">integrate</a></strong> with DynamoDB Streams, and what are some key considerations when setting up a Lambda function to <strong><a href="https://aws.amazon.com/blogs/database/dynamodb-streams-use-cases-and-design-patterns/" rel="noopener" target="_blank">process </a></strong> stream records?</p>
+</li>
+<li>
+<p>How do you configure a DynamoDB Stream <strong><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.Lambda.html" rel="noopener" target="_blank">trigger</a></strong> for a Lambda function? </p>
+</li>
+<li>
+<p>How does DynamoDB's on-demand capacity mode <strong><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html" rel="noopener" target="_blank">differ</a></strong> from provisioned capacity mode?</p>
+</li>
+<li>
+<p>How does the structure of a DynamoDB Stream <strong><a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_streams_Record.html" rel="noopener" target="_blank">record</a></strong>
+ represent the changes made to the data in the 'Configuration' table, 
+and what information does it provide for a Lambda function to process?</p>
+</li>
+<li>
+<p>How can Amazon CloudWatch be used to <strong><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/metrics-dimensions.html" rel="noopener" target="_blank">monitor</a></strong> the performance and health of the Lambda function and DynamoDB tables?</p>
+</li>
+</ul>
+<h4>Final Quiz Prep:</h4>
+<p><strong>Enable Eda recommendations</strong> to receive suggestions based on your task results and test your knowledge with questions to prepare for <strong>the Final Quiz</strong>!</p>
+      </div>
+      
+      
+<div class="accordion mt-3 mb-3" id="secondTemporaryCredits">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="secondTemporaryCreditsHeading">
+            <button class="accordion-button collapsed bg-secondary-subtle" type="button" data-bs-toggle="collapse" data-bs-target="#secondTemporaryCreditsCollapse" aria-expanded="false" aria-controls="secondTemporaryCreditsCollapse" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                <div class="row d-flex justify-content-between">
+                    <div class="col-lg-2 d-flex justify-content-center align-items-center p-0">
+                        <i class="fas fa-solid fa-key fa-3x" style="color: #ffc107;"></i>
+                    </div>
+                    <div class="col-lg-10 align-self-center p-0">
+                        You may obtain temporary credentials to access the AWS
+                        infrastructure here.
+                    </div>
+                </div>
+            </button>
+        </h2>
+        <div id="secondTemporaryCreditsCollapse" class="accordion-collapse collapse" aria-labelledby="secondTemporaryCreditsHeading" data-bs-parent="#secondTemporaryCredits">
+            <div class="accordion-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <strong>Sandbox Account</strong><br>
+                        Use these credentials if you do not have your own AWS
+                        account. This is sandbox account we provide for working
+                        on your tasks, creating the related resources and
+                        estimating the result by yourself. You may also use a
+                        personal AWS account instead.
+                    </div>
+                    <div class="col-lg-4 text-end d-flex align-items-center justify-content-end">
+                        <button id="secondExecutionTempCredits" class="btn btn-warning" style="width: 70%;">Get sandbox credentials
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <strong>Verification Account</strong><br>
+                        Use this account to review the resources that were
+                        created during the task verification. <br>Region: <b>eu-central-1</b>
+                    </div>
+                    <div class="col-lg-4 text-end d-flex align-items-center justify-content-end">
+                        <button id="secondTempCreditsButton" class="btn btn-warning" style="width: 70%;">Get verification credentials
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+      
+<div id="definitionNotice" class="mb-3">
+    <h2>Task verification</h2>
+    <div id="definitionNoticeContent" class="container-fluid p-4 rounded bg-primary-subtle">
+        <h4 style="color: #004570;">Verification resource naming</h4>
+        The goal of task verification is to make sure that the infrastructure
+        created within the task meets the task requirements.<br>During the
+        process, resources are created in the <b>Verification Account</b>, with the
+        standardized suffix and prefix <b>added automatically</b> to their names.
+        <ul>
+            <li>Your prefix: <span class="text-danger">cmtr-67d6e834-</span></li>
+            <li>Your suffix: <span class="text-danger">-test</span></li>
+            <li>Region: <span class="text-danger">eu-central-1</span>
+                (Frankfurt)
+            </li>
+        </ul>
+        For example, if you describe a resource called "resource", its full name will be:
+        <span class="text-danger">cmtr-67d6e834-resource-test</span><br>
+        To find your resources easily, use the full name generated by the system.
+    </div>
+</div>
+
+    </div>
+    <div id="liveAlertPlaceholder"></div>
+    
+<div id="taskStartForm"></div>
+
+    <div id="deploymentLoader" class="mb-3 d-none">
+      <p class="lead text-muted">Please wait while we prepare the resources needed for this task.
+        It can take several minutes...</p>
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="resetTaskModal" tabindex="-1" aria-labelledby="resetTaskModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="resetTaskModalLabel">Important Notice</h1>
+          </div>
+          <div class="modal-body">
+            <p>Dear User,</p>
+            <p>
+              It has been 30 minutes since you started the task. If you encounter any issues with the system,
+              please click "Reset task" to abort the current task. This will initiate the cleaning process for
+              the task's infrastructure resources in your account.
+            </p>
+            <p>
+              Please don't try to run new task. Restart current task and if you'll face that issue
+              again contact our support team.
+            </p>
+            <p>
+              If you are uncertain, you may close the dialog. It will appear in 30 minutes again.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button id="resetTaskButton" type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Reset task</button>
+            <button id="closeDialogButton" type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+<div id="taskValidationForm" class="mb-3">
+    <div class="form-group mb-2">
+        <p>Now you can solve the given problem. After that use the
+            buttons below to verify
+            your solution. Verification can take several minutes.<br><strong>Note:</strong> by default, the Git repository's default
+            branch will be used, and the <span class="text-danger">task06</span>
+            folder will be selected for verification.
+        </p>
+        <label for="repositoryInput" class="form-label">Provide the path to
+                the Git storage with your task materials:<br> • Specify your Git
+                account:</label>
+        <div class="input-group">
+            <input type="password" class="form-control" id="repositoryInput" placeholder="https://username:deploy_token@repository-url.git" ,="" value="https://tselina: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@github.com/tselina/-epam_serverless_aws_deep_dive_06.git">
+            <div class="input-group-append">
+                <span class="input-group-text" id="passwordVisibility">
+                    <i class="fas fa-eye" aria-hidden="true" style="font-size: 2rem;"></i>
+                </span>
+            </div>
+        </div>
+        <small class="form-text text-muted">
+            Input your Git account. For private repositories, use: <code>'http(s)://&lt;username&gt;:&lt;deploy_token&gt;@&lt;repository_url&gt;'</code>
+            <br>
+            For public repositories, use:<code>'http(s)://&lt;repository_url&gt;'</code>
+        </small>
+        <div id="dynamicVerifyParameters"><label for="dynamicVerifyParametersstudent_repo_branch" class="form-label"> • Specify the branch (optional):</label><div><input id="dynamicVerifyParametersstudent_repo_branch" class="form-control" type="text" placeholder="e.g. &quot;develop&quot;"></div><div><small class="form-text text-muted">If not specified, <code>default repo</code> branch is used</small></div><label for="dynamicVerifyParametersstudent_repo_path" class="form-label"> • Specify the folder (optional):</label><div><input id="dynamicVerifyParametersstudent_repo_path" class="form-control" type="text" placeholder="e.g. &quot;solutions/hello_world_lambda&quot;"></div><div><small class="form-text text-muted">Solution folder path. <code>task06</code> will be used by default.</small></div></div>
+    </div>
+    <div>
+        In order to proceed with a new verification or finish the current task,
+        it's important to first destroy the resources from the previous task.
+        To do this, please use the "Destroy Resources" button provided.
+    </div>
+    <div class="btn-group mb-3" role="group" aria-label="Verify or abort">
+        <button id="startTaskButton" type="submit" class="btn btn-outline-success">
+            <span aria-hidden="true" class="spinner-border-sm" role="status"></span>
+            <span>Verify</span>
+        </button>
+        <button id="verifyTaskButton" type="submit" class="btn btn-outline-success" style="display: none;">
+      <span class="spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span>Checking task state</span>
+        </button>
+        <button id="abortTaskButton" type="submit" class="btn btn-outline-danger" disabled="disabled">
+            <span class="spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span>Abort</span>
+        </button>
+        <button id="destroyResources" type="submit" class="btn btn-outline-primary" disabled="disabled">
+            <span class="spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span>Destroy resources</span>
+        </button>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="wrongRepositoryModal" tabindex="-1" role="dialog" aria-labelledby="wrongRepositoryModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="position: absolute; bottom: 0; left: 0; right: 0; margin: auto;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="wrongRepositoryModalLabel">
+                    Invalid repository</h1>
+            </div>
+            <div class="modal-body">
+                The repository input is not set or in the wrong format.
+                Please make sure it is in the format:<br>
+                For private repositories:<br>
+                <code>'http(s)://&lt;username&gt;:&lt;deploy_token&gt;@&lt;repository_url&gt;'</code>
+                <br>
+                For public repositories:<br>
+                <code>'http(s)://&lt;repository_url&gt;'</code>
+            </div>
+            <div class="modal-footer">
+                <button id="wrongRepositoryCloseButton" type="button" class="btn btn-primary" data-bs-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+<div id="taskValidations" class="mb-3 d-none">
+      <h2 class="mb-3">Checks</h2>
+    <div id="AISummary" class="mb-1">
+        <div class="form-check form-switch mb-1">
+            <input class="form-check-input" type="checkbox" id="AISummarySwitch">
+            <div class="form-check-label" for="AISummarySwitch">Enable EdA
+                recommendations
+            </div>
+        </div>
+        <div id="AISummaryLoader" class="d-flex align-items-center mt-3 d-none">
+            <div class="spinner-border spinner-border-sm ms-2 me-3 mb-2" role="status"></div>
+            <div class="lead me-2">Generating...</div>
+        </div>
+        <div id="AISummaryErrorAlertTemplate" class="alert alert-warning alert-dismissible d-none" role="alert">
+            <div>Errors occurred during AI summary generation. Please retry
+                later. If the issue persists, contact the support team.
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div id="AISummaryErrorAlertPlaceholder"></div>
+        <div id="AISummaryErrorAlert" class="alert alert-warning alert-dismissible d-none" role="alert">`,
+            <div>Errors occurred during AI summary generation. Please retry
+                later. If the issue persists, contact the support team.
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+      <div class="accordion" id="validationsAccordion">
+        
+      </div>
+    </div>
+
+    
+<div id="AISummaryAccordion" class="mb-3 d-none">
+    <div class="accordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button id="AISummaryAccordionButton" class="accordion-button collapsed bg-danger-subtle" type="button" data-bs-toggle="collapse" data-bs-target="#AISummary-accordion" aria-expanded="false">Verification summary by EdA
+                </button>
+            </h2>
+            <div id="AISummary-accordion" class="accordion-collapse collapse">
+                <div id="AISummaryContent" class="accordion-body" style="white-space: pre-wrap;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+<div id="executorFailed" class="mb-3 d-none">
+    <div class="alert alert-warning" role="alert">
+        <div>
+            <h4 class="alert-heading">Unexpected error!</h4>
+            <p>
+                There's been an unexpected error with your task. We suggest
+                restarting
+                it after some time. If the issue persists, please contact our
+                support
+                team at:<br>
+                <a href="mailto:SupportEPM-CMTRL2@epam.com">SupportEPM-CMTRL2@epam.com</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+    
+<div id="taskValidationsFailed" class="mb-3 d-none">
+    <div class="alert alert-warning" role="alert">
+        <button type="button" id="taskValidationsFailedCloseButton" class="btn-close float-end" aria-label="Close"></button>
+        <div>
+            <h4 class="alert-heading">Task verification failed!</h4>
+            During task verification, an error has occurred.<br>
+        </div>
+        <pre id="evalErrorMessage" class="codehilite d-none"></pre>
+        <div>
+            You can check resources in sandbox and free to <b>Destroy
+            resources</b> and attempt to retry.<br>
+            If this message recurs, please contact our support team.
+        </div>
+    </div>
+</div>
+
+    
+<div id="destroyToProceedNotification" class="mb-3 d-none">
+    <div class="d-flex alert alert-info d-flex justify-content-between">
+        <div class="col-lg-7 align-self-center p-2">
+            <h4>Task successfully completed!</h4>
+            <p>Take your time to view deployed resources. To <strong>finish the
+                task</strong> you should click "Destroy resources" button in
+                that
+                block or above.</p>
+        </div>
+        <div class="col-lg-2 d-flex align-items-center justify-content-center ml-auto p-2">
+            <button id="destroyResourcesNotificationButton" type="submit" class="btn btn-outline-primary">
+            <span class="spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span>Destroy resources</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+    
+<div id="destroymentLoader" class="mb-3 d-none">
+    <p class="lead text-muted">Please, wait while the resources are <b>being
+        destroyed</b>. You will get a confirmation, it could take several
+        minutes...
+    </p>
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+    <div id="destroymentNotification" class="mb-3 d-none">
+      <h2 class="mb-3">Task resources status:</h2>
+      <div class="accordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button id="destroymentNotificationButton" class="accordion-button collapsed bg-danger-subtle" type="button" data-bs-toggle="collapse" data-bs-target="#destroument-accordion" aria-expanded="false">See more</button>
+          </h2>
+          <div id="destroument-accordion" class="accordion-collapse collapse">
+            <div id="destroymentContent" class="accordion-body" style="white-space: pre-wrap;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+<div id="taskFeedback" class="mb-3 d-none">
+    <h2 class="mb-2">Feedback</h2>
+    <form>
+        <fieldset disabled="">
+            <div class="mb-2">
+                <div class="mb-3">Your task has been successfully completed. You
+                    are now able to commence a new task. We welcome any feedback
+                    regarding your experience. Please submit your feedback or
+                    simply click the "Submit feedback" button to be able to
+                    restart the task.
+                </div>
+                <label for="feedbackScoreInput" class="form-label">Feedback
+                    score</label>
+                <select class="form-select" id="feedbackScoreInput">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option selected="selected" value="5">5</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="feedbackCommentInput" class="form-label">Comment:</label>
+                <textarea class="form-control" rows="2" id="feedbackCommentInput"></textarea>
+            </div>
+            <button id="submitFeedbackButton" type="submit" class="btn btn-outline-success mb-3">Submit feedback
+            </button>
+        </fieldset>
+        <div id="feedbackThank" class="mb-3 d-none">Thank you for your feedback!
+            Your task is marked as completed.
+        </div>
+    </form>
+</div>
+
+    
+<div id="restartTask" class="mb-3 d-none">
+    <hr class="mt-4">
+    <!-- Modal -->
+    <div class="modal fade" id="restartTaskModal" tabindex="-1" aria-labelledby="restartTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="position: absolute; bottom: 0; left: 0; right: 0; margin: auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="restartTaskModalLabel">
+                        Restart Task Confirmation</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">You are about to restart your task.
+                    Please note:
+                    <ol>
+                        <li><b>Resource Reset:</b> Pay attention that task
+                            resource naming could be changed.
+                        </li>
+                        <li><b>New Attempt:</b> After restart "Verify" button
+                            click will start a new task attempt.
+                        </li>
+                        <li><b>Score: </b> Your current score will be saved till
+                            the new task attempt start and updated after start.
+                        </li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                    </button>
+                    <button id="restartTaskButton" type="button" class="btn btn-primary" data-bs-dismiss="modal">Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button id="showModalButton" class="mb-3 btn btn-warning w-25" data-bs-toggle="modal" data-bs-target="#restartTaskModal">Restart the task
+        </button>
+    </div>
+</div>
+
+    <div id="restartLoader" class="mb-3 d-none">
+      <p class="lead text-muted">Restarting...</p>
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+  <script src="Cloud%20Mentor%20Task_files/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+   <script src="Cloud%20Mentor%20Task_files/main.js"></script>
+   
+<script>
+    window.dynamicData = {"verify_params": {"student_repo_branch": {"label": " \u2022 Specify the branch (optional):", "note": "If not specified, <code>default repo</code> branch is used", "tag": "input", "attributes": {"class": "form-control", "type": "text", "placeholder": "e.g. \"develop\""}, "required": false, "order": 1}, "student_repo_path": {"label": " \u2022 Specify the folder (optional):", "note": "Solution folder path. <code>task06</code> will be used by default.", "tag": "input", "attributes": {"class": "form-control", "type": "text", "placeholder": "e.g. \"solutions/hello_world_lambda\""}, "required": false, "order": 2}}};
+</script>
+<script src="Cloud%20Mentor%20Task_files/helpers.js"></script>
+<script src="Cloud%20Mentor%20Task_files/stm.js"></script>
+
+<!--   <script src="../static/js/main.js"></script>-->
+
+
+</body></html>

@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.UUID;
 
 @LambdaHandler(
-		lambdaName = "audit_producer",
-		roleName = "audit_producer-role",
-		isPublishVersion = true,
-		aliasName = "${lambdas_alias_name}",
-		logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
+    lambdaName = "audit_producer",
+	roleName = "audit_producer-role",
+	isPublishVersion = true,
+	aliasName = "${lambdas_alias_name}",
+	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
 @DynamoDbTriggerEventSource(targetTable = "Configuration", batchSize = 1)
 @DependsOn(name = "Configuration", resourceType = ResourceType.DYNAMODB_TABLE)
