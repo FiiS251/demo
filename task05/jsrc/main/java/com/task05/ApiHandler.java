@@ -1,147 +1,79 @@
 package com.task05;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariable;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariables;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
-import com.syndicate.deployment.model.Architecture;
-import com.syndicate.deployment.model.DeploymentRuntime;
+import com.syndicate.deployment.annotations.lambda.LambdaUrlConfig;
 import com.syndicate.deployment.model.RetentionSetting;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.ISODateTimeFormat;
-import com.google.gson.Gson;
+import com.syndicate.deployment.model.lambda.url.AuthType;
+import com.syndicate.deployment.model.lambda.url.InvokeMode;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@LambdaHandler(lambdaName = "api_handler",
-		aliasName = "learn",
+@LambdaHandler(
+		lambdaName = "api_handler",
 		roleName = "api_handler-role",
-		runtime = DeploymentRuntime.JAVA17,
-		architecture = Architecture.ARM64,
+		aliasName = "${lambdas_alias_name}",
 		isPublishVersion = false,
 		logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
+@LambdaUrlConfig(
+		authType = AuthType.NONE,
+		invokeMode = InvokeMode.BUFFERED
+)
 @EnvironmentVariables(value = {
 		@EnvironmentVariable(key = "region", value = "${region}"),
-		@EnvironmentVariable(key = "table", value = "${target_table}")}
+		@EnvironmentVariable(key = "table", value = "${target_table}")
+}
 )
-public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
-	public static final ObjectMapper objectMapper = new ObjectMapper();
-	private static final int SC_CREATED = 201;
-	private final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
-			.withRegion("eu-central-1")
-			.build();
-	private final String tableName = "cmtr-d0429c20-Events-test";
+public class ApiHandler implements RequestHandler<Map<String, Object>, Map<String, Object>> {
+	private final DynamoDB dynamoDB;
+	private final Table table;
 
-	@Override
-	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
-		context.getLogger().log("Request: " + request.getBody());
-        Event event = null;
+	public ApiHandler() {
+		this.dynamoDB = new DynamoDB(AmazonDynamoDBClientBuilder.defaultClient());
+		this.table = dynamoDB.getTable(System.getenv("table")); // Use environment variable
+	}
 
-        try {
-            event = objectMapper.readValue(
-					request.getBody().replace("content", "body"),
-					Event.class
-			);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        context.getLogger().log("Event before: " + event);
-		event.setId(UUID.randomUUID().toString());
-		event.setCreatedAt(formatUsingJodaTime(org.joda.time.LocalDate.now()));
-		context.getLogger().log("Event after: " + event);
-
-		Map<String, AttributeValue> item = new HashMap<>();
-		item.put("id", new AttributeValue().withS(event.getId()));
-		item.put("principalId", new AttributeValue().withN((String.valueOf(event.getPrincipalId()))));
-		item.put("createdAt", new AttributeValue().withS(event.getCreatedAt()));
-		Map<String, AttributeValue> bodyMap = new HashMap<>();
-		event.getBody().forEach((key, value) -> bodyMap.put(key, new AttributeValue().withS(value)));
-		item.put("body", new AttributeValue().withM(bodyMap));
-
-		context.getLogger().log("Item: " + item);
-		client.putItem(new PutItemRequest().withTableName(tableName).withItem(item));
-		context.getLogger().log("Item added to table: " + tableName);
-
-		Response responseObj = new Response(SC_CREATED, event);
-
-		APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
-		response.setStatusCode(201);
+	public Map<String, Object> handleRequest(Map<String, Object> input, Context context) {
 		try {
-			String responseBody = objectMapper.writeValueAsString(responseObj);
-			response.setBody(responseBody);
+			int principalId = (int) input.get("principalId");
+			Map<String, String> content = (Map<String, String>) input.get("content");
+
+			String id = UUID.randomUUID().toString();
+			String createdAt = java.time.Instant.now().toString();
+
+			Item item = new Item()
+					.withPrimaryKey("id", id)
+					.withInt("principalId", principalId)
+					.withString("createdAt", createdAt)
+					.withMap("body", content);
+
+			table.putItem(item);
+
+			Map<String, Object> response = Map.of(
+					"statusCode", 201,
+					"event", Map.of(
+							"id", id,
+							"principalId", principalId,
+							"createdAt", createdAt,
+							"body", content
+					)
+			);
+
+			return response;
+
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			context.getLogger().log("Error: " + e.getMessage());
+			return Map.of("statusCode", 500, "error", e.getMessage());
 		}
-
-		return response;
-	}
-
-	public static String formatUsingJodaTime(org.joda.time.LocalDate localDate) {
-		org.joda.time.format.DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
-		return formatter.print(localDate.toDateTimeAtStartOfDay(DateTimeZone.UTC));
-	}
-
-	public static class Event {
-		@JsonProperty("id")
-		private String id;
-		@JsonProperty("principalId")
-		private int principalId;
-		@JsonProperty("createdAt")
-		private String createdAt;
-		@JsonProperty("body")
-		private Map<String, String> body;
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public int getPrincipalId() {
-			return principalId;
-		}
-
-		public void setPrincipalId(int principalId) {
-			this.principalId = principalId;
-		}
-
-		public String getCreatedAt() {
-			return createdAt;
-		}
-
-		public void setCreatedAt(String createdAt) {
-			this.createdAt = createdAt;
-		}
-
-		public Map<String, String> getBody() {
-			return body;
-		}
-
-		public void setBody(Map<String, String> body) {
-			this.body = body;
-		}
-
-		@Override
-		public String toString() {
-            return new Gson().toJson(this);
-        }
 	}
 }
