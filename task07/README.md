@@ -1,31 +1,47 @@
-# task07 AWS Lambda + CloudWatch Rule + S3 Integration
+# task07
 
-```shell
-syndicate generate project --name task07
-cd task07
-syndicate generate config --name "dev" `
-    --region "eu-central-1" `
-    --bundle_bucket_name "syndicate-education-platform-custom-sandbox-artifacts-sbox02/67d6e834/task07" `
-    --prefix "cmtr-67d6e834-" `
-    --extended_prefix "true" `
-    --tags "course_id:SEP_GL_6,course_type:stm,student_id:67d6e834,type:student" `
-    --iam_permissions_boundary "arn:aws:iam::905418349556:policy/eo_role_boundary" `
-    --access_key "" `
-    --secret_key "" `
-    --session_token ""
-[System.Environment]::SetEnvironmentVariable('SDCT_CONF', 'C:\projects\serverless\aws\epam_serverless_aws_deep_dive_06\task07\.syndicate-config-dev', [System.EnvironmentVariableTarget]::Process)
-```
+High level project overview - business value it brings, non-detailed technical overview.
 
-```shell
-syndicate generate lambda `
-    --name uuid_generator `
-    --runtime java
-    
-syndicate generate meta cloudwatch_event_rule `
-    --resource_name uuid_trigger `
-    --rule_type schedule `
-    --expression "rate(1 minutes)"
-    
-syndicate generate meta s3_bucket `
-    --resource_name uuid-storage
+### Notice
+All the technical details described below are actual for the particular
+version, or a range of versions of the software.
+### Actual for versions: 1.0.0
+
+## task07 diagram
+
+![task07](pics/task07_diagram.png)
+
+## Lambdas descriptions
+
+### Lambda `lambda-name`
+Lambda feature overview.
+
+### Required configuration
+#### Environment variables
+* environment_variable_name: description
+
+#### Trigger event
+```buildoutcfg
+{
+    "key": "value",
+    "key1": "value1",
+    "key2": "value3"
+}
 ```
+* key: [Required] description of key
+* key1: description of key1
+
+#### Expected response
+```buildoutcfg
+{
+    "status": 200,
+    "message": "Operation succeeded"
+}
+```
+---
+
+## Deployment from scratch
+1. action 1 to deploy the software
+2. action 2
+...
+
