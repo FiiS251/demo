@@ -15,7 +15,7 @@ import com.task03.handler.GetHelloHandler;
 import java.util.Map;
 
 @LambdaHandler(lambdaName = "hello_world",
-    aliasName = "learn",
+	aliasName = "learn",
 	roleName = "hello_world-role",
 	runtime = DeploymentRuntime.JAVA17,
 	architecture = Architecture.ARM64,
